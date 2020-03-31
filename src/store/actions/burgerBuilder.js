@@ -4,7 +4,6 @@ import axios from "../../axios.oreder";
 //! crate action creator
 
 export const addIngredient = name => {
-  console.log(" ### Action addIngredient 1");
   return {
     type: actionTypes.ADD_INGRDIENT,
     ingredientsName: name
