@@ -6,7 +6,7 @@ import "./SideDrawer.css";
 import Backdrop from "../../UI/Backdrop/Backdrop";
 import Aux from "../../../hoc/Auxx";
 
-const sideDrawer = props => {
+const sideDrawer = (props) => {
   let attachedClasses = ["SideDrawer", "Close"];
 
   if (props.open) {
@@ -21,7 +21,7 @@ const sideDrawer = props => {
           <Logo />
         </div>
         <nav>
-          <NavigationItems />
+          <NavigationItems isAuthenticatede={props.isAuth} />
         </nav>
       </div>
     </Aux>

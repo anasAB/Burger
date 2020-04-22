@@ -7,12 +7,12 @@ const controls = [
   { label: "Salad", type: "salad", cost: 1 },
   { label: "Bacon", type: "bacon", cost: 2 },
   { label: "Cheese", type: "cheese", cost: 3 },
-  { label: "Meat", type: "meat", cost: 4 }
+  { label: "Meat", type: "meat", cost: 4 },
 ];
 
-const buildControls = props => (
+const buildControls = (props) => (
   <div className="BuildControls">
-    {controls.map(ctrl => (
+    {controls.map((ctrl) => (
       <BuildControl
         key={ctrl.label}
         label={ctrl.label}
@@ -36,7 +36,7 @@ const buildControls = props => (
       disabled={!props.order}
       clicked={props.HiderOrder}
     >
-      Order Now
+      {props.isAuth ? "Order Now" : "SignUp to Order"}
     </Button>
   </div>
 );

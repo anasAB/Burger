@@ -11,12 +11,13 @@ import { connect } from "react-redux";
 // import * as actionType from "../../store/actions/actionTypes";
 import * as BurgerBuilderActions from "../../store/actions/burgerBuilder";
 import * as orderAction from "../../store/actions/order";
+import * as AuthRedirect from "../../store/actions/auth";
 
 class BurgerBuilder extends Component {
   state = {
     //!Just be Sure the ingredients has the same names, otherwise it's will not work
     purchasable: false, // ! Hide/Show
-    orderSummaryHidden: false //! Hide the Order Summary
+    orderSummaryHidden: false, //! Hide the Order Summary
   };
 
   componentDidMount() {
@@ -27,7 +28,7 @@ class BurgerBuilder extends Component {
 
   updatePurchaseState(ingredients) {
     const sum = Object.keys(ingredients)
-      .map(igKey => {
+      .map((igKey) => {
         return ingredients[igKey];
       })
       .reduce((sum, el) => {
@@ -37,14 +38,23 @@ class BurgerBuilder extends Component {
     // this.setState({ purchasable: sum > 0 });
   }
 
-  //!Hide the Order Button
+  //!if the User is Sigen in, he can order, otherwise, the UI will push him to thee Auth Page
   OrderHandler = () => {
-    this.setState({ orderSummaryHidden: true });
+    if (this.props.isAuth) {
+      this.setState({ orderSummaryHidden: true });
+    } else {
+      this.props.onSetAuthRedirectPath("/checkout");
+      this.props.history.push("/auth");
+    }
   };
 
   //!Closed Modal, Used in both Modal & OrderSummary for Closing
   modalHandler = () => {
     this.setState({ orderSummaryHidden: false });
+  };
+
+  purchaseCanelHanler = () => {
+    this.setState({ purchasable: false });
   };
 
   //! sending the Order into the Database
@@ -55,7 +65,7 @@ class BurgerBuilder extends Component {
 
   render() {
     const disabledInfo = {
-      ...this.props.ings
+      ...this.props.ings,
     };
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
@@ -80,6 +90,7 @@ class BurgerBuilder extends Component {
             // ingredientsCost={Ingredients_PRICES}
             order={this.updatePurchaseState(this.props.ings)}
             HiderOrder={this.OrderHandler}
+            isAuth={this.props.isAuth}
           />
         </Aux>
       );
@@ -111,29 +122,33 @@ class BurgerBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log("Burger Builder State", state);
+const mapStateToProps = (state) => {
+  console.log("# BurgerBuilder State", state);
   return {
     ings: state.burgerbuilder.ingredients,
     price: state.burgerbuilder.totalPrice,
     error: state.burgerbuilder.error,
-    purchased: state.burgerbuilder.purchased
+    purchased: state.burgerbuilder.purchased,
+    isAuth: state.auth.token !== null,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onIngredientAdded: ingName => {
+    onIngredientAdded: (ingName) => {
       dispatch(BurgerBuilderActions.addIngredient(ingName));
     },
 
-    onIngredientRemoved: ingName =>
+    onIngredientRemoved: (ingName) =>
       dispatch(BurgerBuilderActions.removeIngredient(ingName)),
 
     onFetchingIntialIngredients: () =>
       dispatch(BurgerBuilderActions.initialIngredients()),
 
-    onInitPurchase: () => dispatch(orderAction.purchased())
+    onInitPurchase: () => dispatch(orderAction.purchased()),
+
+    onSetAuthRedirectPath: (path) =>
+      dispatch(AuthRedirect.SetAuthRedirectPath(path)),
   };
 };
 // initialIngredients

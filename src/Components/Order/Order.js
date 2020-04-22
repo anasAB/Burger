@@ -4,7 +4,6 @@ import Spinner from "../UI/Spinner/spinner";
 
 const order = props => {
   const ingredients = [];
-  console.log("ORDER PROPS", props);
   for (let ingredientName in props.ingredients) {
     ingredients.push({
       name: ingredientName,

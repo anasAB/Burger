@@ -8,16 +8,19 @@ const initialState = {
     salad: 1,
     bacon: 2,
     cheese: 3,
-    meat: 4
+    meat: 4,
   },
   totalPrice: 3,
-  purchased: false
+  purchased: false,
+  building: false, //! we will need it for the store Ingredient when we redirect back from the Auth page to burgerbuilder
 };
 
 const addIngredient = (state, action) => {
+  console.log("# STATE--", state);
   const updatedIngredient = {
-    [action.ingredientsName]: state.ingredients[action.ingredientsName] + 1
+    [action.ingredientsName]: state.ingredients[action.ingredientsName] + 1,
   };
+
   const updatedIngredients = updatedObject(
     state.ingredients,
     updatedIngredient
@@ -26,22 +29,25 @@ const addIngredient = (state, action) => {
   const updateState = {
     ingredients: updatedIngredients,
     totalPrice:
-      state.totalPrice + state.Ingredients_PRICES[action.ingredientsName]
+      state.totalPrice + state.Ingredients_PRICES[action.ingredientsName],
+    building: true,
   };
 
   return updatedObject(state, updateState);
-}; //?===end Add Ingredient===
+};
 
-//!
+//?===end Add Ingredient===
+
 const removeIngredieent = (state, action) => {
   return {
     ...state,
     ingredients: {
       ...state.ingredients,
-      [action.ingredientsName]: state.ingredients[action.ingredientsName] - 1
+      [action.ingredientsName]: state.ingredients[action.ingredientsName] - 1,
     },
     totalPrice:
-      state.totalPrice - state.Ingredients_PRICES[action.ingredientsName]
+      state.totalPrice - state.Ingredients_PRICES[action.ingredientsName],
+    building: true,
   };
 };
 
@@ -58,7 +64,7 @@ const reducer = (state = initialState, action) => {
     case action.PURCHASE_INIT:
       return {
         ...state,
-        purchased: false
+        purchased: false,
       };
     case actionType.SET_INGREDIENT:
       return {
@@ -67,17 +73,18 @@ const reducer = (state = initialState, action) => {
           salad: action.ingredients.salad,
           bacon: action.ingredients.bacon,
           cheese: action.ingredients.cheese,
-          meat: action.ingredients.meat
+          meat: action.ingredients.meat,
         },
         error: false,
         purchased: false,
-        totalPrice: 4
+        totalPrice: 4,
+        builder: false,
       };
 
     case actionType.FAILED_FETCHING:
       return {
         ...state,
-        error: true
+        error: true,
       };
 
     case actionType.ADD_INGRDIENT:
